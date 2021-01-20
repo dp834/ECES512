@@ -1,0 +1,170 @@
+\documentclass{beamer}
+\usetheme{Rochester}
+\usecolortheme{beetle}
+
+\usepackage[shortlabels]{enumitem}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage[b]{esvect}
+\usepackage{tikz}
+
+%Information to be included in the title page:
+\title{Project Proposal}
+\subtitle{ECES 512}
+\author{Damien Prieur \\ Partner: Conor Kennedy}
+\date{1/13/2021}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+\frametitle{Electromechanical Magnetic-Ball Suspension}
+\begin{itemize}[$\bullet$]
+\item Make an object levitate by controlling the current
+\end{itemize}
+\begin{figure}
+\includegraphics[scale=.75]{"../images/Electromechanical Magnetic-Ball Suspension setup".png}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Mathematical Model}
+Variables
+\begin{itemize}
+\item $R$ - Resistance
+\item $L$ - Inductance
+\item $v$ - Voltage
+\item $m$ - Mass
+\item $K$ - Coefficient that relates force to the magnetic field
+\item $g$ - Gravity
+\item $i$ - Current
+\item $y$ - Distance of Mass M to electromagnet
+\end{itemize}
+$$
+\begin{aligned}
+    &\begin{aligned}
+        \mathllap{v(t)} &= Ri(t) + L\frac{di(t)}{dt}
+    \end{aligned} \\
+    &\begin{aligned}
+        \mathllap{m\frac{d^2y(t)}{dt^2}} &= mg - K\frac{i^2(t)}{y(t)}
+    \end{aligned} \\
+\end{aligned}
+$$
+\end{frame}
+
+\begin{frame}
+\frametitle{I/O and State Variables}
+\begin{itemize}[$\bullet$]
+\item We control the voltage $v$
+\item Goal is to control distance $y$
+\end{itemize}
+$$
+\vv{x}=
+\begin{bmatrix}
+x_1 \\
+x_2 \\
+x_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+i \\
+y \\
+\dot{y}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\text{Current} \\
+\text{Distance}\\
+\text{Velocity}
+\end{bmatrix}
+$$
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Linearization about the Equilibrium}
+$$
+\begin{bmatrix}
+\dot{x}_1 \\
+\dot{x}_2 \\
+\dot{x}_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{u(t)-Rx_1(t)}{L} \\
+x_3(t) \\
+-\frac{Kx_1^2(t)}{mx_2(t)} + g
+\end{bmatrix}
+$$
+$$
+A
+=
+\frac{\partial h}{\partial x}
+=
+\begin{bmatrix}
+-\frac{R}{L} & 0 & 0\\
+0 & 0 & 1\\
+-\frac{2Kx_1(t)}{mx_2(t)} & \frac{K}{m}(\frac{x_1(t)}{x_2(t)})^2 & 0\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+-\frac{R}{L} & 0 & 0\\
+0 & 0 & 1\\
+-\frac{2Kx_{01}}{mx_{02}} & \frac{K}{m}(\frac{x_{01}}{x_{02}})^2 & 0\\
+\end{bmatrix}
+$$
+$$
+B
+=
+\frac{\partial h}{\partial u}
+=
+\begin{bmatrix}
+\frac{1}{L} \\
+0 \\
+0 \\
+\end{bmatrix}
+\qquad
+C
+=
+\begin{bmatrix}
+0 & 1 & 0
+\end{bmatrix}
+\qquad
+D
+=
+\begin{bmatrix}
+0
+\end{bmatrix}
+$$
+\\
+$$
+v_0 = 7 \qquad
+x_0
+=
+\begin{bmatrix}
+7 \\
+.00998 \\
+0
+\end{bmatrix}
+\qquad
+A
+=
+\begin{bmatrix}
+-100 & 0 & 0 \\
+0 & 0 & 1 \\
+-2.803 & 982 & 0
+\end{bmatrix}
+$$
+\end{frame}
+
+\begin{frame}
+\frametitle{References}
+\begin{enumerate}[1.]
+\item \url{http://ctms.engin.umich.edu/CTMS/index.php?example=Introduction\&section=ControlStateSpace}
+\item \url{https://elec3004.uqcloud.net/laboratories/LeviLab/Levitating\%20Magnet\%20Modelling\%20Example.pdf}
+\end{enumerate}
+\end{frame}
+
+\end{document}
