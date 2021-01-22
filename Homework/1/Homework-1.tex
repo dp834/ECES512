@@ -1,0 +1,182 @@
+\documentclass{article}
+
+\usepackage[margin=.75in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{pgfplots}
+\usepackage{circuitikz}
+\usepackage{float}
+
+\author{Damien Prieur}
+\title{Homework 1 \\ ECES 512}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Problem 1}
+Given the system with state equations below with unit step input $u(t)$ and initial condition $x_1(0) = 2$, $x_2(0)=3$:
+\begin{align*}
+\dot{x}_1 &= -2x_1 + u \\
+\dot{x}_2 &= \phantom{-}x_1 - x_2
+\end{align*}
+
+\begin{enumerate}[a.]
+\item Find the state space representation of the system.
+$$
+\begin{bmatrix}
+\dot{x}_1 \\
+\dot{x}_2 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+-2 & 0 \\
+1  & -1 \\
+\end{bmatrix}
+\begin{bmatrix}
+x_1 \\
+x_2 \\
+\end{bmatrix}
++
+\begin{bmatrix}
+1 \\
+0 \\
+\end{bmatrix}
+u
+$$
+
+\item Find the time domain solution.\\
+Solving for the solution using a convolution.
+$$ \mathbf{x}(t)
+=
+e^{\mathbf{A}t}\mathbf{x}(0) + \int_0^t e^{\mathbf{A}(t-\tau)}\mathbf{B}\mathbf{u}(\tau) d\tau
+$$
+First we find the matrix exponential of $\mathbf{A}$
+$$e^{\mathbf{A}t} = 
+\begin{bmatrix}
+e^{-2 t} & 0 \\
+e^{-2 t} (e^t-1) & e^{-t} \\
+\end{bmatrix}
+$$
+Plugging this into our equation we get
+$$ \mathbf{x}(t)
+=
+\begin{bmatrix}
+e^{-2 t} & 0 \\
+e^{-2 t} (e^t-1) & e^{-t} \\
+\end{bmatrix}
+\begin{bmatrix}
+2\\
+3
+\end{bmatrix}
++
+\int_0^t 
+\begin{bmatrix}
+e^{2 \tau -2 t} \\
+e^{\tau -2 t} (e^t-e^{\tau }) \\
+\end{bmatrix}
+\begin{bmatrix}
+1\\
+0
+\end{bmatrix}
+1
+d\tau
+$$
+$$ \mathbf{x}(t)
+=
+\begin{bmatrix}
+2 e^{-2 t} \\
+2 e^{-2 t} (e^t-1) + 3 e^{-t} \\
+\end{bmatrix}
++
+\begin{bmatrix}
+\frac{1}{2}-\frac{1}{2}e^{-2 t} \\
+\frac{1}{2} e^{-2 t} (e^t-1)^2 \\
+\end{bmatrix}
+$$
+$$
+x(t) =
+\begin{bmatrix}
+\frac{3}{2}e^{-2 t}+\frac{1}{2} \\
+-\frac{3}{2}e^{-2 t}+4 e^{-t}+\frac{1}{2} \\
+\end{bmatrix}
+$$
+\item Try to sketch your solution by hand. \\
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=.75\linewidth]{{P1_C}.png}
+\end{figure}
+\item Verify your result in part b and c using Matlab(lsim).
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=.75\linewidth]{{images/p1_predicted_vs_simulation}.png}
+\end{figure}
+\end{enumerate}
+
+\newpage
+\section*{Problem 2}
+Given the system with transfer function below with unit step input $u(t)$ and zero initial conditions.
+$$ G(s) = \frac{3s + 2}{s(s^2+3s+2)} $$
+
+\begin{enumerate}[a.]
+\item Apply partial fraction decomposition to $G(s)$.
+$$ \frac{3s + 2}{s(s+2)(s+1)} = \frac{A}{s} + \frac{B}{s+1} + \frac{C}{s+2} $$
+$$ 3s + 2 = {A}(s^2+3s+2) + B(s^2+2s) + C(s^2+s) $$
+$$ A = 1 \qquad A + B + C = 0 \qquad 3A + 2B + C = 3 $$
+$$ A = 1 \qquad B + C = -1 \qquad 2B = -C $$
+$$ A = 1 \qquad B = 1 \qquad C = -2 $$
+$$ \frac{3s + 2}{s(s+2)(s+1)} = \frac{1}{s} + \frac{1}{s+1} + \frac{-2}{s+2} $$
+
+\item Draw a block diagram of the system.
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=.75\linewidth]{{P2_B}.png}
+\end{figure}
+\item Find a state space representation of the system.\\
+Using controllable Canonical Form
+$$G(s) = \frac{Y(s)}{U(s)} = \frac{Z(s)(3s + 2)}{Z(s)s(s^2+3s+2)} $$
+$$ y = 3\dot{z} + 2z $$
+$$ u = \dddot{z} + 3\ddot{z} +2\dot{z} $$
+$$ \begin{bmatrix}q_1\\q_2\\q_3\\\end{bmatrix} = \begin{bmatrix}z\\\dot{z}\\\ddot{z}\\\end{bmatrix}$$
+$$\dot{\mathbf{q}} =
+\begin{bmatrix}
+q_2\\
+q_3\\
+u - 3q_3 - 2 q_2\\
+\end{bmatrix}
+$$
+$$y = 3 q_2 + 2 q_1 $$
+$$\dot{\mathbf{q}} =
+\begin{bmatrix}
+0 & 1 & 0 \\
+0 & 0 & 1 \\
+0 &-2 &-3 \\
+\end{bmatrix} 
+\mathbf{q}
++
+\begin{bmatrix}
+0 \\
+0 \\
+1 \\
+\end{bmatrix} 
+u
+$$
+$$ y = \begin{bmatrix} 2 & 3 & 0 \end{bmatrix} \mathbf{q} $$
+\item Find the time domain solution. \\
+Finding the solution using the inverse laplace transform.
+$$ U(s) = \frac{1}{s} $$
+$$ Y(s) = G(s) U(s) $$
+$$ Y(s) = \frac{3s+2}{s^2(s^2+3s+2)} $$
+$$ Y(s) = \frac{1}{s^2}+\frac{1}{s+2}-\frac{1}{s+1} $$
+Take the inverse Laplace of each term since the Laplace transform is linear we get
+$$y(t) = e^{-2 t}-e^{-t} + t$$
+\item Verify your result using Matlab(lsim).
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=.75\linewidth]{{images/p2_2_predicted_vs_simulation}.png}
+\end{figure}
+\end{enumerate}
+
+\end{document}
