@@ -1,0 +1,488 @@
+\documentclass{article}
+
+\usepackage[margin=.75in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{pgfplots}
+\usepackage{circuitikz}
+\usepackage{float}
+
+\author{Damien Prieur}
+\title{Homework 2 \\ ECES 512}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Problem 1}
+Given the time varying system below:
+$$
+\dot{x} =
+\begin{bmatrix}
+-1 & e^{2t} \\
+0 & -1 \\
+\end{bmatrix}
+x
+$$
+\begin{enumerate}[a.]
+\item Find the fundamental matrix of the system.
+\newline
+First we can expand the state equations into two state equations.
+$$ \dot{x_1} = -x_1 + e^{2t}x_2 \qquad \dot{x_2} = -x_2 $$
+We can start by solving the second equation trivially.
+$$ x_2(t) = c_2e^{-t} $$
+Substituting the solution into the first equation we get
+$$ \frac{dx_1}{dt} = -x_1 + e^{2t} c_2e^{-t} $$
+We can solve this equation using an integrating factor.
+$$\frac{dy}{dx} + p(x)y = q(x) \implies y = \frac{\int \mu q(x) dx}{\mu} \quad \text{Where} \quad \mu = e^{\int p(x) dx}$$
+Rewriting the first equation we get
+$$ \frac{x_1}{dt} + 1 x_1 = c_2e^{t} \implies p(x) = 1 \quad q(x) = c_2e^{t} $$
+$$ \mu = e^{\int 1 dt}  = e^t $$
+$$ x_1(t) = \frac{\int e^t c_2e^{t}dt}{e^t} = e^{-t} \int c_2e^{2t} dt$$
+$$ x_1(t) = e^{-t}(\frac{c_2}{2}e^{2t} + c_1) $$
+$$ x_1(t) = c_1e^{-t}+\frac{c_2}{2}e^{t} $$
+Now we can look at 2 initial state solutions. For simplicity $t_0 = 0$, $x^{(1)}(t_0) = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$, $x^{(1)}(t_0) = \begin{bmatrix} 0 \\ 1 \end{bmatrix}$
+$$x^{(1)}(0) = \begin{bmatrix} 1 \\ 0 \end{bmatrix} \implies
+x^{(1)}(0) =
+\begin{bmatrix}
+e^{-t}\\\
+0\\
+\end{bmatrix}
+$$
+$$x^{(2)}(0) = \begin{bmatrix} 0 \\ 1 \end{bmatrix} \implies
+x^{(2)}(0) =
+\begin{bmatrix}
+\frac{1}{2} e^{t}\\
+e^{-t}\\
+\end{bmatrix}
+$$
+The two initial conditions are trivially independent as well as it is the diagonal matrix.
+The fundamental matrix is the two particular solutions concatenated.
+$$
+X(t) =
+\begin{bmatrix}
+e^{-t} & \frac{1}{2} e^{t} \\
+0 & e^{-t} \\
+\end{bmatrix}
+$$
+This matrix is also independent by looking at the determinant
+$$ det(X) = e^{-2t} $$
+
+\item Find the state transition matrix for the system.
+\newline
+The state transition matrix can be found using $ \Phi (t,t_0) = X(t)X^{-1}(t_0)$.
+First we compute $X^{-1}(t)$, since it's a 2x2 matrix it's trivial
+$$X^{-1}(t) =
+\frac{1}{e^{-2t}}
+\begin{bmatrix}
+e^{-t} & -\frac{1}{2} e^{t} \\
+0 & e^{-t} \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+e^{t} & -\frac{1}{2}e^{3t} \\
+0 & e^{t} \\
+\end{bmatrix}
+$$
+$$
+\Phi(t,t_0) =
+\begin{bmatrix}
+e^{-t} & \frac{1}{2} e^{t} \\
+0 & e^{-t} \\
+\end{bmatrix}
+\begin{bmatrix}
+e^{t} & -\frac{1}{2}e^{3t} \\
+0 & e^{t} \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+e^{t - t_0} & \frac{1}{2}e^{t+t_0}-\frac{1}{2} e^{-(t - 3 t_0)} \\
+0 & e^{t-t_0} \\
+\end{bmatrix}
+$$
+
+\item What is the time domain solution if the system is unforced with initial condition $x(0) = \begin{bmatrix}1 \\ 2 \end{bmatrix}$?
+\newline
+The solution of a Linear Time Varying System is given by
+$$x(t) = \Phi(t,t_0)x_0 + \int_{t_0}^{t}\Phi(t,\tau)B(\tau)u(\tau)d\tau $$
+Since we are looking at the Zero input response we can just use the first term.
+$$x(t) =
+\begin{bmatrix}
+e^{t - t_0} & \frac{1}{2}e^{t+t_0}-\frac{1}{2} e^{-(t - 3 t_0)} \\
+0 & e^{t-t_0} \\
+\end{bmatrix}
+\begin{bmatrix}
+1 \\
+2
+\end{bmatrix}
+=
+\begin{bmatrix}
+e^{t - t_0} + e^{t+t_0} - e^{-(t - 3 t_0)} \\
+2 e^{t-t_0} \\
+\end{bmatrix}
+$$
+
+\item With the input $u(t)$ and the same initial condition in part c, what is the general time domain solution? (You don't need to expand the integral.)
+\newline
+The solution of a Linear Time Varying System is given by
+$$x(t) = \Phi(t,t_0)x_0 + \int_{t_0}^{t}\Phi(t,\tau)B(\tau)u(\tau)d\tau $$
+The first term will be the same
+$$x(t) =
+\begin{bmatrix}
+e^{t - t_0} + e^{t+t_0} - e^{-(t - 3 t_0)} \\
+2 e^{t-t_0} \\
+\end{bmatrix}
++
+\int_{0}^{t}
+\begin{bmatrix}
+e^{t - t_0} & \frac{1}{2}e^{t+t_0}-\frac{1}{2} e^{-(t - 3 t_0)} \\
+0 & e^{t-t_0} \\
+\end{bmatrix}
+B(\tau)
+u(\tau)
+d\tau
+$$
+
+
+\end{enumerate}
+
+\newpage
+\section*{Problem 2}
+Now with the state space of your own project:
+\begin{enumerate}[a.]
+\item What is the input and output?
+\newline
+The input is a Voltage.
+The output is the distance the ball is away from the coil.
+
+\item What are the states and their initial conditions?
+\newline
+The states are the current, distance from the coil and velocity of the ball relative to the coil.
+$$
+\begin{bmatrix}
+x_1 \\
+x_2 \\
+x_3 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+\text{current} \\
+\text{position} \\
+\text{velocity} \\
+\end{bmatrix}
+$$
+The initial conditions will be based on the point we linearize around.
+The current and velocity will start at the equilibrium point while the position will be near the equilibrium point but my be above or below by some margin.
+$$
+x_0
+=
+\begin{bmatrix}
+7   \\
+.01 \\
+0   \\
+\end{bmatrix}
+$$
+The equilibrium point is derived below in part C
+
+\item What is the time domain solution of your system?
+\newline
+Here is the full system
+$$
+\begin{bmatrix}
+\dot{x}_1 \\
+\dot{x}_2 \\
+\dot{x}_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{u(t)-Rx_1(t)}{L} \\
+x_3(t) \\
+-\frac{Kx_1^2(t)}{mx_2(t)} + g
+\end{bmatrix}
+$$
+$$
+y(t) = x_2(t)
+$$
+First we must linearize around an equilibrium point.
+$$
+\begin{bmatrix}
+\dot{x}_1 \\
+\dot{x}_2 \\
+\dot{x}_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+0 \\
+0 \\
+0 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{u(t)-Rx_1(t)}{L} \\
+x_3(t) \\
+-\frac{Kx_1^2(t)}{mx_2(t)} + g
+\end{bmatrix}
+$$
+Which gives us
+$$ x_1(t) = \frac{u(t)}{R}, \qquad x_3(t) = 0, \qquad x_2(t) = \frac{Ku^2(t)}{mgR^2} $$
+\begin{minipage}{.45\textwidth}
+    For a constant input voltage we get
+    $$ y_0 = \frac{Kv_0^2}{mgR^2} $$
+\end{minipage}
+\hfill
+\begin{minipage}{.45\textwidth}
+    If we want to hold the ball at a height $y_0$
+    $$ v_0 = \sqrt{\frac{y_0mgR^2}{K}} $$
+\end{minipage}%
+Now the general form for the linearized solution
+$$
+\begin{bmatrix}
+\dot{x}_1 \\
+\dot{x}_2 \\
+\dot{x}_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{u(t)-Rx_1(t)}{L} \\
+x_3(t) \\
+-\frac{Kx_1^2(t)}{mx_2(t)} + g
+\end{bmatrix}
+$$
+$$
+A
+=
+\frac{\partial h}{\partial x}
+=
+\begin{bmatrix}
+-\frac{R}{L} & 0 & 0\\
+0 & 0 & 1\\
+-\frac{2Kx_1(t)}{mx_2(t)} & \frac{K}{m}(\frac{x_1(t)}{x_2(t)})^2 & 0\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+-\frac{R}{L} & 0 & 0\\
+0 & 0 & 1\\
+-\frac{2Kx_{01}}{mx_{02}} & \frac{K}{m}(\frac{x_{01}}{x_{02}})^2 & 0\\
+\end{bmatrix}
+$$
+$$
+B
+=
+\frac{\partial h}{\partial u}
+=
+\begin{bmatrix}
+\frac{1}{L} \\
+0 \\
+0 \\
+\end{bmatrix}
+\qquad
+C
+=
+\begin{bmatrix}
+0 & 1 & 0
+\end{bmatrix}
+\qquad
+D
+=
+\begin{bmatrix}
+0
+\end{bmatrix}
+$$
+Now if we linearize around the input voltage $= 7V$
+$$
+v_0 = 7 \qquad
+x_0
+=
+\begin{bmatrix}
+7 \\
+.00998 \\
+0
+\end{bmatrix}
+\qquad
+A
+=
+\begin{bmatrix}
+-100 & 0 & 0 \\
+0 & 0 & 1 \\
+-2.803 & 982 & 0
+\end{bmatrix}
+\qquad
+B
+=
+\begin{bmatrix}
+100 \\
+0 \\
+0
+\end{bmatrix}
+$$
+Now we find the time domain solution of the linearized system
+$$
+\mathbf{x}(t)
+=
+e^{\mathbf{At}}\mathbf{x}(0) + \int_0^t e^{\mathbf{A}(t-\tau)}\mathbf{B}\mathbf{u}(\tau) d\tau
+$$
+First we need to find the matrix exponential
+\newline
+Eigenvalues
+$$
+(\lambda I - A)x = 0
+\quad
+\begin{bmatrix}
+\lambda + 100 & 0 & 0 \\
+0 & \lambda & 1 \\
+2.803 & -982 & \lambda
+\end{bmatrix}
+x = 0
+$$
+$$
+98200 + 982 \lambda - 100 \lambda^2 - \lambda^3
+$$
+$$
+\implies \lambda_1 = -100 \lambda_2 = 31.3369 \quad \lambda_3 = -31.3369
+$$
+Jordan Decomposition
+$$
+(A-\lambda_1 I)q_1=0,
+\begin{bmatrix}
+0 & 0 & 0 \\
+0 & 100 & 1 \\
+-2.803 & 982 & 100
+\end{bmatrix}
+q_1
+=
+0
+\implies
+q_1 = \begin{bmatrix} 3217.267 \\ 1 \\ -100 \end{bmatrix}
+$$
+$$
+\begin{bmatrix}
+-131.3369 & 0 & 0 \\
+0 & -31.3369 & 1 \\
+-2.803 & 982 &-31.3369 
+\end{bmatrix}
+q_2
+=0
+\implies
+q_2 = \begin{bmatrix} 0 \\ 1 \\ 31.3369 \end{bmatrix}
+$$
+$$
+\begin{bmatrix}
+-68.6631 & 0 & 0 \\
+0 & 31.3369 & 1 \\
+-2.803 & 982 & 31.3369
+\end{bmatrix}
+q_3
+=
+0
+\implies
+q_3 = \begin{bmatrix} 0 \\ 1 \\ -31.3369 \end{bmatrix}
+$$
+Normalizing eigenvectors
+$$
+q_1=
+\begin{bmatrix} .999517 \\ -3.1067\times10^{-4} \\ .031067 \end{bmatrix}
+\quad
+q_2=
+\begin{bmatrix} 0 \\ .031895 \\ .999491 \end{bmatrix}
+q_3=
+\begin{bmatrix} 0 \\ .031895 \\ -.999491 \end{bmatrix}
+$$
+Jordan Normal Form
+$$
+Q
+=
+\begin{bmatrix}
+.999517             & 0 & 0 \\
+-3.1067\times10^{-4} & .031895 & .031895 \\
+.031067            & .999491 & -.999491
+\end{bmatrix}
+$$
+$$
+J
+=
+\begin{bmatrix}
+-100 & 0 & 0 \\
+0 & 31.3369 & 0 \\
+0 & 0 & -31.3369
+\end{bmatrix}
+$$
+$$
+Q^{-1}
+=
+\begin{bmatrix}
+1.00048 & 0. & 0. \\
+-0.0106764 & 15.6764 & 0.500255 \\
+ 0.0204215 & 15.6764 & -0.500255 \\
+\end{bmatrix}
+$$
+Matrix Exponential
+$$ e^{At} = Qe^JQ^{-1}
+=
+Q
+\begin{bmatrix}
+e^{-100t} & 0 & 0 \\
+0 & e^{31.3369t} & 0 \\
+0 & 0 & e^{-31.3369t}
+\end{bmatrix}
+Q^{-1}
+$$
+This Expression becomes very large so each column of the matrix will be broken up with the first column followed by the next two.
+$$
+\begin{bmatrix}
+e^{\lambda_1 t} 																								\\
+-3.10823\times 10^{-4} e^{\lambda_1 t}+6.51349\times 10^{-4} e^{\lambda_3 t}-3.40526\times 10^{-4} e^{\lambda_2 t} \\
+ 0.0310823 e^{\lambda_1 t}-0.0204112 e^{\lambda_3 t}-0.010671 e^{\lambda_2 t} 										\\
+\end{bmatrix}
+$$
+$$
+\begin{bmatrix}
+0 								   			& 0 \\
+0.5 e^{\lambda_3 t}+0.5 e^{\lambda_2 t} 			& 0.0159556 e^{\lambda_2 t}-0.0159556 e^{\lambda_3 t} \\
+15.6684 e^{\lambda_2 t}-15.6684 e^{\lambda_3 t} 	& 0.5 e^{\lambda_3 t}+0.5 e^{\lambda_2 t} \\
+\end{bmatrix}
+$$
+
+Solution
+$$\mathbf{u}(t) = \begin{bmatrix} 7 \end{bmatrix} $$
+$$
+\mathbf{x}(t)
+=
+e^{\mathbf{At}}\mathbf{x}(0) + \int_0^t e^{\mathbf{A}(t-\tau)}\mathbf{B}\mathbf{u}(\tau) d\tau
+$$
+$$
+\mathbf{x}(t)
+=
+e^{\mathbf{A}t}\mathbf{x}(0)
++
+\begin{bmatrix}
+7 -7 e^{-100 t} \\
+0.0199807 +0.00217576 e^{-100 t}-0.0145498 e^{-31.3369 t}-0.00760664 e^{31.3369 t} \\
+-0.217576 e^{-100. t}+0.455944 e^{-31.3369 t}-0.238368 e^{31.3369 t} \\
+\end{bmatrix}
+$$
+$$
+x(t) =
+\begin{bmatrix}
+7 \\
+0.0199807\, -0.00499033 e^{-31.3369 t}-0.00499033 e^{31.3369 t} \\
+0.156381 e^{-31.3369 t}-0.156381 e^{31.3369 t} \\
+\end{bmatrix}
+$$
+
+\item Simulate your system and plot the states and output in Matlab.
+\newline
+\begin{figure}[h!]
+\includegraphics[width=1\linewidth]{{images/linearized_7.000000_input_7.000000_initial_pos_-0.010000}.png}
+\end{figure}
+\newline
+The Current appears to be the correct equation which make sense due to the fact that that part of the system can be described by a linear system.
+The Position and velocity graphs appear to be close but not accurate to the simulation. I would attribute this to lack of numerical precision since most of the numbers are quite small and being multiplied making them even smaller.
+Also while computing my close form solution I removed terms that were very close to zero so that I didn't have to carry them through the equations.
+The solution to the nonlinear differential equation is also graphed, but it is difficult to see as the linearized solutions quickly grow in comparison.
+The linearized nonlinear terms cause the system to explode when it leaves the small region around it's linearization region.
+\end{enumerate}
+
+
+\end{document}
