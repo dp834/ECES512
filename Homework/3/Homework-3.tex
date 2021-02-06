@@ -1,0 +1,254 @@
+\documentclass{article}
+
+\usepackage[margin=.75in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{pgfplots}
+\usepackage{circuitikz}
+\usepackage{float}
+
+\author{Damien Prieur}
+\title{Homework 3 \\ ECES 512}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Problem 1}
+Given the system
+$\frac{dx}{dt} =
+\begin{bmatrix}
+0 &  1 & 2 \\
+0 & -2 & 3 \\
+0 &  0 & 0 \\
+\end{bmatrix}
+x +
+\begin{bmatrix}
+1 \\
+1 \\
+0 \\
+\end{bmatrix}
+u
+$
+and the vector output $ y = \begin{bmatrix} 0 & 1 & 0 \end{bmatrix}x + 2 u $
+\begin{enumerate}[a.]
+\item What are the eigenvalues of matrix $A$?
+\newline
+$$ det(\lambda I - A) = 0 \qquad
+det(
+\begin{bmatrix}
+\lambda &  -1 & -2 \\
+0 & \lambda+2 & -3 \\
+0 &  0 & \lambda \\
+\end{bmatrix}
+)
+=0
+$$
+$$\lambda(\lambda+2)(\lambda)= \lambda^2(\lambda-2)=0 $$
+$$\lambda_1 = 0 \quad \lambda_2 = 0 \quad \lambda_3 = -2 $$
+
+
+\item Compute the transfer function $G(s)$.
+\newline
+$$ G(s) = C(sI-A)^{-1}B + D $$
+$$
+G(s) =
+\begin{bmatrix} 0 & 1 & 0 \end{bmatrix}
+(
+\begin{bmatrix}
+s & 0 & 0 \\
+0 & s & 0 \\
+0 & 0 & s \\
+\end{bmatrix}
+-
+\begin{bmatrix}
+0 &  1 & 2 \\
+0 & -2 & 3 \\
+0 &  0 & 0 \\
+\end{bmatrix}
+)
+^{-1}
+\begin{bmatrix}
+1 \\
+1 \\
+0 \\
+\end{bmatrix}
++ 2
+$$
+$$
+G(s) =
+\begin{bmatrix} 0 & 1 & 0 \end{bmatrix}
+(
+\begin{bmatrix}
+s &  -1 & -2 \\
+0 & s+2 & -3 \\
+0 &  0  &  s \\
+\end{bmatrix}
+)
+^{-1}
+\begin{bmatrix}
+1 \\
+1 \\
+0 \\
+\end{bmatrix}
++ 2
+$$
+We can use the formula $A^{-1} = \frac{1}{det(A)} adj(A)$
+$$
+\frac{1}{s^2(s+2)}
+\begin{bmatrix}
+s(s+2) & 0   & 0 \\
+s      & s^2 & 0 \\
+2s+7   & 3s  & s(s+2) \\
+\end{bmatrix}
+^T
+=
+\frac{1}{s^2(s+2)}
+\begin{bmatrix}
+s(s+2) & s   & 2s+7 \\
+0      & s^2 & 3s \\
+0      & 0   & s(s+2) \\
+\end{bmatrix}
+$$
+Plugging this in we can find $G(s)$
+$$
+G(s) =
+\frac{1}{s^2(s+2)}
+\begin{bmatrix} 0 & 1 & 0 \end{bmatrix}
+\begin{bmatrix}
+s(s+2) & s   & 2s+7 \\
+0      & s^2 & 3s \\
+0      & 0   & s(s+2) \\
+\end{bmatrix}
+\begin{bmatrix}
+1 \\
+1 \\
+0 \\
+\end{bmatrix}
++ 2
+$$
+$$
+G(s) =
+\frac{1}{s^2(s+2)}
+\begin{bmatrix} 0 & s^2 & 3s \end{bmatrix}
+\begin{bmatrix}
+1 \\
+1 \\
+0 \\
+\end{bmatrix}
++ 2
+=
+\frac{s^2}{s^2(s+2)} + 2
+=
+\frac{1}{(s+2)} + 2
+$$
+$$ G(s) = \frac{2s+5}{s+2} $$
+
+
+\item Find the pole(s) of the transfer function.
+\newline
+The only pole that isn't cancelled is $s=-2$.
+
+\item Explain the difference you see between the eigenvalues of $A$ and the poles of the system.
+\newline
+If we look at the transfer function before we cancelled some terms $G(s) = \frac{s^2}{s^2(s+2)} + 2 $.
+We can see that all of the eigenvalues are poles of this equation but the pole $s=0$ gets cancelled by the zero in the numerator.
+
+\item Is the system BIBO stable? Why?
+\newline
+This system is BIBO stable as the only pole that weren't cancelled are in the left half plane ($s=-2$).
+
+\end{enumerate}
+
+
+\newpage
+\section*{Problem 2}
+If the output of the system in problem 1 is changed to $ y = \begin{bmatrix} 1 & .5 & 0 \end{bmatrix}x$
+\begin{enumerate}[a.]
+\item What is the new transfer function?
+\newline
+$$ G(s) = C(sI-A)^{-1}B + D $$
+$$
+G(s) =
+\begin{bmatrix} 1 & .5 & 0 \end{bmatrix}
+(
+\begin{bmatrix}
+s & 0 & 0 \\
+0 & s & 0 \\
+0 & 0 & s \\
+\end{bmatrix}
+-
+\begin{bmatrix}
+0 &  1 & 2 \\
+0 & -2 & 3 \\
+0 &  0 & 0 \\
+\end{bmatrix}
+)
+^{-1}
+\begin{bmatrix}
+1 \\
+1 \\
+0 \\
+\end{bmatrix}
++ 2
+$$
+The inner term is identical so we can just replace it then perform the required matrix multiplications.
+$$
+G(s) =
+\frac{1}{s^2(s+2)}
+\begin{bmatrix} 1 & .5 & 0 \end{bmatrix}
+\begin{bmatrix}
+s(s+2) & s   & 2s+7 \\
+0      & s^2 & 3s \\
+0      & 0   & s(s+2) \\
+\end{bmatrix}
+\begin{bmatrix}
+1 \\
+1 \\
+0 \\
+\end{bmatrix}
++ 2
+$$
+$$
+G(s) =
+\frac{1}{s^2(s+2)}
+\begin{bmatrix} 1 & .5 & 0 \end{bmatrix}
+\begin{bmatrix}
+s(s+2) + s  \\
+s^2         \\
+0           \\
+\end{bmatrix}
++ 2
+$$
+$$
+G(s) =
+\frac{s(s+2) + s  + .5 s^2}{s^2(s+2)}
++ 2
+$$
+$$
+G(s) =
+\frac{1.5s(s+ 2)}{s^2(s+2)}
++ 2
+$$
+$$ G(s) = \frac{1.5}{s} + 2 =  \frac{1.5 + 2s}{s}$$
+
+\item Find the poles.
+\newline
+The new pole is located at $s=0$
+
+\item Is the system with the new output still BIBO stable? Why?
+\newline
+The new system is not BIBO stable as the pole is not in the left half plane $Re(s) < 0$
+
+\item Compare the BIBO stablility of the systems from both problems. Explain why they are identical/different.
+\newline
+The second system is not stable while the first is due to the introduction of the first state variable in the output.
+This state is probably not internally stable but since we are only looking at the bounded input and output the internal state doesn't matter to us.
+By including this internal unstable state the system's output is no longer finite.
+We can see this mathematically as the new transfer function's poles are no longer located in the left half plane.
+
+\end{enumerate}
+
+\end{document}
