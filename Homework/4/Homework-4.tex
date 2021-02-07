@@ -1,0 +1,423 @@
+\documentclass{article}
+
+\usepackage[margin=.75in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{pgfplots}
+\usepackage{circuitikz}
+\usepackage{float}
+
+\author{Damien Prieur}
+\title{Homework 4\\ ECES 512}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Problem 1}
+Given the SISO LTI system
+$$
+\frac{dx}{dt} =
+\begin{bmatrix}
+-1 &  4 \\
+ 4 & -1 \\
+\end{bmatrix}
+x +
+\begin{bmatrix}
+1 \\
+1 \\
+\end{bmatrix}
+u
+$$
+$$ y = \begin{bmatrix} 1 & 1 \end{bmatrix} x $$
+
+\begin{enumerate}[a.]
+\item Show why the system is not controllable.
+\newline
+We can look at the rank of the controllability matrix $\begin{bmatrix} B & AB \end{bmatrix}$
+$$ AB =
+\begin{bmatrix}
+-1 &  4 \\
+ 4 & -1 \\
+\end{bmatrix}
+\begin{bmatrix}
+1 \\
+1 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+3 \\
+3 \\
+\end{bmatrix}
+$$
+Therefore the controllability matrix is
+$$
+\begin{bmatrix}
+1 & 3 \\
+1 & 3 \\
+\end{bmatrix}
+$$
+Which we can see is not linearly independent as column 2 is $3$ column 1.
+Since the controllable matrix is not full rank the full system is not controllable.
+
+\item Reduce the state equation to a controllable one.
+\newline
+The system can be reduced to a controllable one by splitting it into its controllable and non-controllable parts.
+We start by generating the $P^{-1}$ matrix
+$$
+P^{-1} =
+\begin{bmatrix}
+1 & 1 \\
+1 & 0 \\
+\end{bmatrix}
+$$
+We can perform an equivalence transformation to get $\bar{A}, \bar{B}, \bar{C}$ using these equations
+$$ \bar{A} = PAP^{-1} \quad \bar{B} = PB \quad \bar{C} = CP^{-1} $$
+First we need to find $P$ by taking the inverse of $P^{-1}$.
+$$
+P =
+\begin{bmatrix}
+0 & 1 \\
+1 & -1 \\
+\end{bmatrix}
+$$
+Solving for each term we get
+$$
+\bar{A} = PAP^{-1} =
+\begin{bmatrix}
+0 & 1 \\
+1 & -1 \\
+\end{bmatrix}
+\begin{bmatrix}
+-1 &  4 \\
+ 4 & -1 \\
+\end{bmatrix}
+\begin{bmatrix}
+1 & 1 \\
+1 & 0 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+ 4 & -1 \\
+-5 &  5 \\
+\end{bmatrix}
+\begin{bmatrix}
+1 & 1 \\
+1 & 0 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+ 3 &  4 \\
+ 0 & -5 \\
+\end{bmatrix}
+$$
+
+$$
+\bar{B} = PB =
+\begin{bmatrix}
+0 & 1 \\
+1 & -1 \\
+\end{bmatrix}
+\begin{bmatrix}
+1 \\
+1 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 \\
+0 \\
+\end{bmatrix}
+$$
+$$
+\bar{C} = CP^{-1} =
+\begin{bmatrix} 1 & 1 \end{bmatrix}
+\begin{bmatrix}
+1 & 1 \\
+1 & 0 \\
+\end{bmatrix}
+=
+\begin{bmatrix} 1 & 1 \end{bmatrix}
+$$
+
+Our new equivalent system is
+$$
+\dot{\bar{x}} =
+\begin{bmatrix}
+ 3 &  4 \\
+ 0 & -5 \\
+\end{bmatrix}
+\bar{x}
++
+\begin{bmatrix}
+1 \\
+0 \\
+\end{bmatrix}
+u
+$$
+$$ \bar{y} = \begin{bmatrix} 1 & 1 \end{bmatrix} \bar{x} $$
+Since the original controllability matrix had rank $1$ the controllable part of this system is expressed by the first variable.
+$$
+\dot{\bar{x}} =
+\begin{bmatrix}
+ 3 \\
+\end{bmatrix}
+\bar{x}
++
+\begin{bmatrix}
+1 \\
+\end{bmatrix}
+u
+$$
+$$ \bar{y} = \begin{bmatrix} 1 \end{bmatrix} \bar{x} $$
+Which is controllable since the rank of a nonzero $1$x$1$ matrix is 1
+
+\item Is the reduced equation observable?
+\newline
+We can look at the observability matrix $\begin{bmatrix} \bar{C} \end{bmatrix}^T$
+$$
+\begin{bmatrix}
+1
+\end{bmatrix}
+$$
+Which is of full rank and therefore they reduced equation is observable.
+
+\end{enumerate}
+
+\newpage
+\section*{Problem 2}
+Given the LTV system $\dot{x} = A(t)x + B(t)u, y = C(t)x$ where:
+$$
+A(t) =
+\begin{bmatrix}
+-2 &  t \\
+ 9 & -3 \\
+\end{bmatrix}
+\quad
+B(t) =
+\begin{bmatrix}
+0 \\
+1 \\
+\end{bmatrix}
+\quad
+C(t) =
+\begin{bmatrix} 0 & e^{5t} \end{bmatrix}
+\quad
+\text{and}
+\quad
+t_0 > 0
+$$
+Check the controllability and Observability of the linear time varying system.
+Remember the necessary and sufficient conditions of the tests in the text.
+\newline
+\textbf{Controllability}
+\newline
+First we can look at the Matrix given by
+$\begin{bmatrix} M_0(t_1) & M_1(t_1) \end{bmatrix}$ where $M_{m+1}(t) = -A(t)M_m(t) + \frac{d}{dt}M_m(t)$ and $M_0(t) = B(t)$
+$$ M_1(t) = -A(t)M_0(t) + \frac{d}{dt} M_0(t) =
+\begin{bmatrix}
+2 & -t \\
+-9 & 3 \\
+\end{bmatrix}
+\begin{bmatrix}
+0 \\
+1 \\
+\end{bmatrix}
++
+\frac{d}{dt}
+\begin{bmatrix}
+0 \\
+1 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+-t \\
+3 \\
+\end{bmatrix}
+$$
+So our controllability matrix is
+$$
+\begin{bmatrix}
+0 & -t \\
+1 & 3 \\
+\end{bmatrix}
+$$
+If there is a finite $t_1 > t_0$ such that the rank of the matrix is $2$ then the system is controllable.
+To find this we can look at the determinant of the matrix and find where it can be singular.
+$$
+det(
+\begin{bmatrix}
+0 & -t \\
+1 & 3 \\
+\end{bmatrix}
+) = -t
+$$
+Since $ t_0 > 0 $ the matrix is always full rank and therefore always controllable and we don't need to check the long integral form since this condition is sufficient but not necessary to determine controllability.
+\newline
+\textbf{Observability}
+\newline
+First we can look at the Matrix given by
+$
+\begin{bmatrix}
+N_0(t_1) \\
+N_1(t_1) \\
+\end{bmatrix}
+$
+where $N_{m+1}(t) = N_m(t)A(t) + \frac{d}{dt}N_m(t)$ and $N_0 = C(t)$
+$$
+N_1(t) = N_0(t)A(t) + \frac{d}{dt}N_0(t) =
+\begin{bmatrix} 0 & e^{5t} \end{bmatrix}
+\begin{bmatrix}
+-2 & t  \\
+9  & -3 \\
+\end{bmatrix}
++ \frac{d}{dt}
+\begin{bmatrix} 0 & e^{5t} \end{bmatrix}
+=
+\begin{bmatrix} 9e^{5t} & -3e^{5t} \end{bmatrix}
++
+\begin{bmatrix} 0 & 5e^{5t} \end{bmatrix}
+=
+\begin{bmatrix} 9e^{5t} & 2e^{5t} \end{bmatrix}
+$$
+So our observability matrix is
+$$
+\begin{bmatrix}
+0 & e^{5t} \\
+9e^{5t} & 2e^{5t} \\
+\end{bmatrix}
+$$
+If there is a finite $t_1>t_0$ such that the rank of the matrix is $2$ then the system is observable.
+To find this we can look at the determinant of the matrix and find where it can be singular.
+$$
+det(
+\begin{bmatrix}
+0 & e^{5t} \\
+9e^{5t} & 2e^{5t} \\
+\end{bmatrix}
+) = 9e^{10t}
+$$
+Since this matrix always full rank the system is always observable and we don't need to check the long integral form since this condition is sufficient but not necessary to determine observability.
+
+\newpage
+\section*{Problem 3}
+Given the DTS system $x[k+1] = Ax[k] + Bu[k], \quad y[k] = Cx[k]$ where:
+$$
+A =
+\begin{bmatrix}
+-0.5 & 0 \\
+0 & 0.5 \\
+\end{bmatrix}
+\quad
+B =
+\begin{bmatrix}
+1 \\
+1 \\
+\end{bmatrix}
+$$
+$$ C = \begin{bmatrix} 0 & 1 \end{bmatrix} $$
+
+\begin{enumerate}[a.]
+\item Use the \textbf{discrete controllability Gramian} to test controllability
+\newline
+To use the discrete controllability gramian we must first verify that the eigenvalues of $A$ are less than $1$.
+Since our matrix is in diagonal form we can see that $\lambda_1 = -.5$ and $\lambda_2 = .5$ so we can proceed with the gramian check.
+$$W_{dc} = \sum_{m=0}^{\infty}A^mBB^T(A^T)^m$$
+First we need to find the $m$th power of A which is trivial since we have a diagonal matrix the $m$th power is equivalent to taking each term to the $m$th power itself
+$$W_{dc} = \sum_{m=0}^{\infty}
+\begin{bmatrix}
+-\frac{1}{2}^m & 0 \\
+0 & \frac{1}{2}^m \\
+\end{bmatrix}
+\begin{bmatrix}
+1 \\
+1 \\
+\end{bmatrix}
+\begin{bmatrix} 1 & 1\\ \end{bmatrix}
+\begin{bmatrix}
+-\frac{1}{2}^m & 0 \\
+0 & \frac{1}{2}^m \\
+\end{bmatrix}
+=\sum_{m=0}^{\infty}
+\begin{bmatrix}
+-\frac{1}{2}^m \\
+ \frac{1}{2}^m \\
+\end{bmatrix}
+\begin{bmatrix}
+-\frac{1}{2}^m & \frac{1}{2}^m \\
+\end{bmatrix}
+$$
+$$
+W_{dc} = \sum_{m=0}^{\infty}
+=
+\begin{bmatrix}
+ \frac{1}{4}^m & -\frac{1}{4}^m \\
+-\frac{1}{4}^m &  \frac{1}{4}^m \\
+\end{bmatrix}
+$$
+Since we have a infinite geometric series where the term being summed is less than 1 we can solve using the relation $\Sigma_{k=0}^\infty\frac{1}{a}^k = \frac{1}{1-\frac{1}{a}}$
+$$ W_{dc} =
+\begin{bmatrix}
+\frac{1}{1-.25} & \frac{1}{1+.25} \\
+\frac{1}{1+.25} & \frac{1}{1-.25} \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{4}{3} & \frac{4}{5} \\
+\frac{4}{5} & \frac{4}{3} \\
+\end{bmatrix}
+$$
+We can check for positive definiteness easily since we are symmetric.
+Since all of our diagonal values are positive so are the eigenvalues which implies that the matrix is positive definite, therefore the system is controllable.
+
+\item Use the \textbf{discrete observability Gramian} to test controllability
+\newline
+To use the discrete observability gramian we must first verify that the eigenvalues of $A$ are less than $1$.
+Since our matrix is in diagonal form we can see that $\lambda_1 = -.5$ and $\lambda_2 = .5$ so we can proceed with the gramian check.
+$$W_{do} = \sum_{m=0}^{\infty}(A^T)^mC^TCA^m$$
+First we need to find the $m$th power of A which is trivial since we have a diagonal matrix the $m$th power is equivalent to taking each term to the $m$th power itself
+$$W_{do} = \sum_{m=0}^{\infty}
+\begin{bmatrix}
+-\frac{1}{2}^m & 0 \\
+0 & \frac{1}{2}^m \\
+\end{bmatrix}
+\begin{bmatrix}
+0 \\
+1 \\
+\end{bmatrix}
+\begin{bmatrix} 0 & 1\\ \end{bmatrix}
+\begin{bmatrix}
+-\frac{1}{2}^m & 0 \\
+0 & \frac{1}{2}^m \\
+\end{bmatrix}
+= \sum_{m=0}^{\infty}
+\begin{bmatrix}
+0 \\
+\frac{1}{2}^m \\
+\end{bmatrix}
+\begin{bmatrix}
+0 & \frac{1}{2}^m \\
+\end{bmatrix}
+$$
+$$
+W_{dc} = \sum_{m=0}^{\infty}
+\begin{bmatrix}
+0 & 0 \\
+0 & \frac{1}{4}^m \\
+\end{bmatrix}
+$$
+Using the same logic as before we can find the solution since we have a geometric series
+$$
+W_{dc} =
+\begin{bmatrix}
+0 & 0 \\
+0 & \frac{4}{3} \\
+\end{bmatrix}
+$$
+We can check for positive definiteness easily since we are symmetric.
+Since we have a zero on the diagonal one of the eigenvalues is zero which makes the matrix not positive definite so our system is not observable.
+
+\end{enumerate}
+
+\end{document}
