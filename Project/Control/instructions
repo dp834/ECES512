@@ -1,0 +1,9 @@
+For the system you chose as your project do:
+1. Determine stability
+2. Determine Controllability; If not controllable - add inputs to make it controllable.
+3. Determine Observability; If not observable - add sensors to make it observable .
+4. Decide upon and explain what is the desired closed loop behavior you wish in terms of: stability, transient, steady state error;
+5. Choose the desired closed loop poles to achieve the required stability and transients in 4.
+6. Design the linear state feedback to realize your design and find Nbar (DC gain) for the desired steady state error.
+7. Demonstrate your design in MATLAB. Show that your design meets the objectives in 4.
+8. Use the above to design and demonstrate OUTPUT FEEDBACK control and compare with STATE FEEDBACK.
