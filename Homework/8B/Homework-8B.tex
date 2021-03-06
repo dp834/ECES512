@@ -1,0 +1,81 @@
+\documentclass{article}
+
+\usepackage[margin=.75in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{pgfplots}
+\usepackage{circuitikz}
+\usepackage{float}
+\usepackage{verbatim}
+
+\author{Damien Prieur}
+\title{Homework 8B\\ ECES 512}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Problem 1}
+Given the state matricies $A = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix} \quad B = \begin{bmatrix} 0 \\ \frac{1}{m} \end{bmatrix} \quad C = \begin{bmatrix} 1 & 0 \end{bmatrix}$, state $x = \begin{bmatrix} x_1 \\ x_2 \end{bmatrix}$ and input $u$ with the objective function:
+$$ J = \int_0^\infty x_1^2+\beta^2 u dt $$
+where $m$, $\beta$ are some unknown constants. And $\beta > 0$.
+
+\begin{enumerate}[a.]
+\item Based on the given information, indicate matrix $Q$ and $R$ in terms of $m$ and $\beta$.
+\newline
+
+\item Solve the ARE using $Q$ and $R$.
+Find the matrix $P$ in terms of $m$ and $\beta$.
+\newline
+
+\item Find the gain vecotr $K$ in terms of $m$ and $\beta$.
+\newline
+
+\item Howd does the solution and cost change with $\beta$ values?
+\newline
+
+\item Verify teh optimal output $F = -x_1 -4x_2$ when $m = 8$ and $\beta = 1$.
+\newline
+
+\item Write out the time domain solution for both the open loop and closed loop system. ($u$ = unit step)
+\newline
+
+\item Simulate both systems and plot the states using Matlab.
+\newline
+
+\end{enumerate}
+
+\newpage
+\section*{Problem 2}
+
+Given the state matrices
+$A =
+\begin{bmatrix}
+0 & 1 & 0 \\
+0 & 0 & 1 \\
+-.4 & -4.2 & -2.1 \\
+\end{bmatrix}
+\quad
+B =
+\begin{bmatrix}
+0 \\
+0 \\
+1 \\
+\end{bmatrix}
+$
+
+\begin{enumerate}[a.]
+\item Find the open loop eigenvalues.
+\newline
+
+\item If $Q = I_3$, find $P, K$ and the closed loop eigenvalues for $R \in \{0.01, 0.1, 1\}$.
+\newline
+
+\item Use Matlab to plot the states and optimal input with the $Q$ and different $R$ values given in part b.
+\newline
+
+\end{enumerate}
+
+\end{document}
