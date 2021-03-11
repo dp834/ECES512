@@ -1,0 +1,223 @@
+\documentclass{article}
+
+\usepackage[margin=.75in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{pgfplots}
+\usepackage{circuitikz}
+\usepackage{float}
+\usepackage{verbatim}
+
+\author{Damien Prieur}
+\title{Final \\ ECES 512}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Problem 1}
+Given the continuous LTI system:
+$$
+\frac{dx}{dt} =
+\begin{bmatrix}
+3 & 1 & 0  \\
+0 & -6 & 1 \\
+0 & 0 & -5 \\
+\end{bmatrix}
+x +
+\begin{bmatrix}
+0 \\
+1 \\
+1 \\
+\end{bmatrix}
+r
+$$
+$$
+y = \begin{bmatrix} 0 & 1 & 1 \end{bmatrix}x
+$$
+
+\begin{enumerate}[a.]
+\item Find the Resolvent matrix $\varphi(s)$ and the state transition matrix $p(t)$.
+\newline
+
+\item Find the transfer function $\frac{Y(s)}{R(s)}$.
+\newline
+
+\item Find the zero input response $x_{zi}(t)$ and the output $y_{zi}(t)$ if the initial condition is $x(0)=\begin{bmatrix} 0 \\ 1 \\ 0.5 \end{bmatrix}$.
+\newline
+
+\item Find the zero state response $x_{zs}(t)$ and the output $y_{zs}(t)$ if the input $r(t) = 20u(t)$;$u(t) = unit step$
+\newline
+
+\item Use \textbf{Matlab} to simulate the time domain solution ($t=[0 \quad 1]$) and output $(t = [0 1.5])$ in part c \& d.
+\newline
+
+\end{enumerate}
+
+\newpage
+
+\section*{Problem 2}
+Given the continuous LTI state space:
+$$
+\frac{dx}{dt} =
+\begin{bmatrix}
+-4 & 5 & 3  \\
+4 & 0 & 0 \\
+0 & 4 & 0 \\
+\end{bmatrix}
+x +
+\begin{bmatrix}
+1 \\
+0 \\
+0 \\
+\end{bmatrix}
+u
+$$
+$$
+y = \begin{bmatrix} 0 & -1 & 1 \end{bmatrix}x
+$$
+$$
+x(0) =
+\begin{bmatrix}
+1 \\
+1 \\
+1 \\
+\end{bmatrix}
+\quad
+u(t) = unitstep
+$$
+
+\begin{enumerate}[a.]
+\item Check the internal stability of the system.
+\newline
+
+\item Find out if the system is BIBO stable.
+\newline
+
+\item Check the controllability of the system.
+\newline
+
+\item Design a state feedback controller to shift the poles to $[-10 \quad 12 \quad -8]$. Use the coefficient matching method to find $K$.
+\newline
+
+\item Use \textbf{Matlab} to plot the general solution of open loop $(t = [0 \quad 0.2])$ and closed loop $(t = [0 \quad 2])$ system. Compare them and explain.
+\newline
+
+\end{enumerate}
+
+\newpage
+\section*{Problem 3}
+Given the continuous LTI system:
+$$
+A =
+\begin{bmatrix}
+0 & 1 & 0  \\
+980 & 0 & -2.8 \\
+0 & 0 & -100 \\
+\end{bmatrix}
+\quad
+B =
+\begin{bmatrix}
+0 \\
+0 \\
+100 \\
+\end{bmatrix}
+\quad
+C =
+\begin{bmatrix} 1 & 0 & 0 \end{bmatrix}
+\quad
+x(0) =
+\begin{bmatrix} 0.01 \\ 0 \\ 0 \end{bmatrix}
+$$
+
+\begin{enumerate}[a.]
+\item Check the Observability of the system.
+\newline
+
+\item Design a controller with the poles located at $[-20\pm20i \quad -100]$. Use Ackermann's method to find $K$.
+\newline
+
+\item Design an observer to estimate the closed loop system with the poles at $[-100 \quad -101 \quad -150]$.
+Use a proper method to find $L$.
+Write out the combined state equation in terms of system and estimator with $x_e(0) = \begin{bmatrix} 0.03 \\ 0.5 \\ -5 \end{bmatrix}$
+\newline
+
+\item Use \textbf{Matlab} to plot the initial condition response of open loop states and closed loop states.
+Compare them and explain.
+(Use $ t = 0:1E-6:0.3$)
+\newline
+
+\item Use \textbf{Matlab} to plot the inital condition response of output feedback states and errors.
+(Use $ t = 0:1E-6:0.3$).
+Explicitly plot and compare $x_1$ vs $x_{e1}$, $x_2$ vs $x_{e2}$, $x_3$ vs $x_{e3}$. Also plot the error independently.
+\newline
+
+\end{enumerate}
+
+\newpage
+\section*{Problem 4}
+Given the continuous LTI system:
+$$
+\dot{x}(t) =
+\begin{bmatrix}
+ 0 &  0 &  1 &  0 \\
+ 0 &  0 &  0 &  1 \\
+-2 &  1 & -1 &  1 \\
+ 1 & -2 &  1 & -1 \\
+\end{bmatrix}
+x(t)
++
+\begin{bmatrix}
+0 & 0 \\
+0 & 0 \\
+1 & 0 \\
+0 & 1 \\
+\end{bmatrix}
+u(t)
+$$
+$$ y(t) =
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+\end{bmatrix}
+x(t)
+$$
+
+\begin{enumerate}[a.]
+\item Consider the infinite horizon quadratic cost:
+$$ J = \int_0^\infty x_1(t)^2 + x_2(t)^2 + u_1(t)^2 + u_2(t)^2 dt $$
+Solve the ARE for the cost function $J$ using \textbf{Matlab}.
+\newline
+
+\item Using the solution $P$, obtain the $K$ matrix using \textbf{Matlab}.
+\newline
+
+\item Use \textbf{Matlab} to plot the trajectory $x_1(t), x_2(t)$ of the system for the following cases
+
+\begin{itemize}[$\bullet$]
+\item Open-loop system with zero input and initial condition $x(0) = \begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \end{bmatrix}$.
+Plot for time $ t \in [0, 15]$.
+\newline
+
+\item Closed-loop system ($u=-Kx$) with initial condition $x(0) = \begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \end{bmatrix}$
+Plot for time $ t \in [0, 10]$.
+\newline
+
+\end{itemize}
+
+\item Use \textbf{Matlab} to plot the optimal control inputs $u_1^*(t), u_2^*(t)$.
+Plot for time $ t \in [0, 10]$.
+\newline
+
+\item Consider the modified cost function:
+$$ J = \int_0^\infty x_1(t)^2 + x_2(t)^2 + \alpha u_1(t)^2 + u_2(t)^2 dt $$
+Write a loop in \textbf{Matlab} that finds the minimal value of $\alpha \in [0.01:0.01:2]$ for which the optimal control input satisfies $max(u_1^*(t)) \leq 0.2$.
+Using the same condition in part c, plot $x_1(t)$ and $u_1^*(t)$ of the closed loop system for this value of $\alpha$.
+Compare trajectories in the nominal case $\alpha = 1$.
+\newline
+
+\end{enumerate}
+
+\end{document}
